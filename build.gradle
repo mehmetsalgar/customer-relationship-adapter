@@ -1,0 +1,137 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		mavenLocal()
+		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://repo.spring.io/milestone" }
+		maven { url "https://plugins.gradle.org/m2/"}
+		maven { url "https://oss.sonatype.org/content/repositories/snapshots"}
+	}
+
+	dependencies {
+		classpath('com.google.cloud.tools:jib-native-image-extension-gradle:0.1.0')
+		classpath "org.unbroken-dome.gradle-plugins.helm:helm-plugin:1.7.0"
+		classpath "org.unbroken-dome.gradle-plugins.helm:helm-publish-plugin:1.7.0"
+	}
+}
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.0.0'
+	id 'io.spring.dependency-management' version '1.1.0'
+	id 'org.graalvm.buildtools.native' version '0.9.18'
+	id 'com.google.cloud.tools.jib' version '3.3.1'
+}
+
+apply plugin: 'com.google.cloud.tools.jib'
+apply plugin: 'org.unbroken-dome.helm'
+apply plugin: 'org.unbroken-dome.helm-publish'
+
+group = 'org.salgar.akka.fsm'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+ext {
+	flag = true
+}
+
+if(ext.flag) {
+	ext.props = [
+			DOCKER_HUB_USER: property('DOCKER_HUB_USER'),
+			DOCKER_HUB_PASSWORD: property('DOCKER_HUB_PASSWORD'),
+			DOCKER_UPLOAD_USER: property('DOCKER_UPLOAD_USER'),
+			DOCKER_UPLOAD_PASSWORD: property('DOCKER_UPLOAD_PASSWORD'),
+			HELM_USER: property('HELM_USER'),
+			HELM_PASSWORD: property('HELM_PASSWORD')
+	]
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+nativeBuild {
+	javaLauncher = javaToolchains.launcherFor {
+		languageVersion = JavaLanguageVersion.of(17)
+		vendor = JvmVendorSpec.matching("GraalVM")
+	}
+}
+
+jib {
+	from {
+		image = 'alpine:3.17.0'
+		auth {
+			username = "${props.DOCKER_HUB_USER}"
+			password = "${props.DOCKER_HUB_PASSWORD}"
+		}
+	}
+	to {
+		image = "fsm-akka.registry:5555/fsmakka/${project.name}:${project.version}"
+		auth {
+			username = "${props.DOCKER_UPLOAD_USER}"
+			password = "${props.DOCKER_UPLOAD_PASSWORD}"
+		}
+	}
+	pluginExtensions {
+		pluginExtension {
+			implementation = 'com.google.cloud.tools.jib.gradle.extension.nativeimage.JibNativeImageExtension'
+			properties = [
+					imageName: 'customer-relationship-adapter-application'
+			]
+		}
+	}
+	allowInsecureRegistries = true
+}
+tasks.jib.dependsOn tasks.nativeCompile
+
+helm {
+	charts {
+		craa {
+			publish = true
+			chartName = 'customer-relationship-adapter-application'
+			chartVersion = '1.1.0'
+			sourceDir = file('helm')
+		}
+	}
+	repositories {
+		craa_rep {
+			url 'http://fsmakka.salgar.org/repository/fsm-akka-helm/'
+			credentials {
+				username = "${props.HELM_USER}"
+				password = "${props.HELM_PASSWORD}"
+			}
+		}
+	}
+	publishing {
+		repositories {
+			nexus {
+				url = uri('http://fsmakka.salgar.org/')
+				repository = 'fsm-akka-helm'
+				apiVersion = 'v1'
+				credentials {
+					username = "${props.HELM_USER}"
+					password = "${props.HELM_PASSWORD}"
+				}
+			}
+		}
+	}
+}
