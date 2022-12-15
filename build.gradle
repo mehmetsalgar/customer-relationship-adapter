@@ -80,7 +80,8 @@ graalvmNative {
 				languageVersion = JavaLanguageVersion.of(17)
 				vendor = JvmVendorSpec.matching("GraalVM")
 			}
-			buildArgs.add("--verbose --static")
+			buildArgs.add("--verbose")
+			buildArgs.add("--static")
 			runtimeArgs.add('--target linux')
 		}
 	}
