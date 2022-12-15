@@ -1,0 +1,14 @@
+FROM ghcr.io/graalvm/graalvm-ce:ol7-java17-22.3.0-b2@sha256:8ebd8a635fe7182fec03de252589939d9d5823ddfc3c5a25c926d5c129f15fc1
+RUN mkdir /opt/classpath
+COPY /build/libs/customer-relationship-adapter-application-1.0.0-SNAPSHOT-all.jar /opt/classpath/
+COPY ./build/classes/java/aot/. /opt/classpath/aot
+COPY ./build/resources/aot/. /opt/classpath/aot
+COPY ./build/generated/aotClasses/. /opt/classpath/aotClasses
+RUN mkdir /opt/configFiles
+COPY ./build/native/generated/generateResourcesConfigFile/. /opt/configFiles
+RUN mkdir /opt/resourceFiles
+COPY ./build/resources/aot/META-INF/native-image/. /opt/resourceFiles
+WORKDIR /opt/graalVM
+RUN gu install native-image
+ENTRYPOINT ["native-image"]
+#ENTRYPOINT ["sh"]

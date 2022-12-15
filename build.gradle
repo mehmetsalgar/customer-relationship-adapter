@@ -21,6 +21,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.0'
 	id 'org.graalvm.buildtools.native' version '0.9.18'
 	id 'com.google.cloud.tools.jib' version '3.3.1'
+	id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 apply plugin: 'com.google.cloud.tools.jib'
@@ -28,7 +29,7 @@ apply plugin: 'org.unbroken-dome.helm'
 apply plugin: 'org.unbroken-dome.helm-publish'
 
 group = 'org.salgar.akka.fsm'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0-SNAPSHOT'
 sourceCompatibility = '17'
 
 ext {
@@ -69,6 +70,15 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+springBoot {
+	mainClass = "org.salgar.akka.fsm.cra.CustomerRelationshipAdapterApplication"
+}
+shadowJar {
+	manifest {
+		attributes 'Main-Class': 'org.salgar.akka.fsm.cra.CustomerRelationshipAdapterApplication'
+	}
+}
+
 nativeBuild {
 	javaLauncher = javaToolchains.launcherFor {
 		languageVersion = JavaLanguageVersion.of(17)
@@ -76,9 +86,21 @@ nativeBuild {
 	}
 }
 
+graalvmNative {
+	binaries {
+		main {
+			buildArgs.add("--verbose")
+			runtimeArgs.add('--target linux')
+		}
+	}
+}
+
 jib {
+	container {
+		mainClass = "CustomerRelationshipAdapterApplication"
+	}
 	from {
-		image = 'alpine:3.17.0'
+		image = 'alpine:3.17.0@sha256:af06af3514c44a964d3b905b498cf6493db8f1cde7c10e078213a89c87308ba0'
 		auth {
 			username = "${props.DOCKER_HUB_USER}"
 			password = "${props.DOCKER_HUB_PASSWORD}"
