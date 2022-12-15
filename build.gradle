@@ -29,7 +29,7 @@ apply plugin: 'org.unbroken-dome.helm'
 apply plugin: 'org.unbroken-dome.helm-publish'
 
 group = 'org.salgar.akka.fsm'
-version = '1.1.2-SNAPSHOT'
+version = '1.1.3'
 sourceCompatibility = '17'
 
 ext {
