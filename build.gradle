@@ -99,7 +99,8 @@ jib {
 		}
 	}
 	to {
-		image = "fsm-akka.registry:5555/fsmakka/${project.name}:${project.version}"
+		image = "fsm-akka.registry:5555/fsmakka/${project.name}"
+		tags = ["${project.version}"]
 		auth {
 			username = "${props.DOCKER_UPLOAD_USER}"
 			password = "${props.DOCKER_UPLOAD_PASSWORD}"
