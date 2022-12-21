@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: k3d-${imageRepository}
+  repository: "k3d-${imageRepository}"
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "${imageTag}
+  tag: "${imageTag}"
 
 imagePullSecrets: []
 nameOverride: ""
