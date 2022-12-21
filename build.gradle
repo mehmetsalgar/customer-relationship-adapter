@@ -29,7 +29,7 @@ apply plugin: 'org.unbroken-dome.helm'
 apply plugin: 'org.unbroken-dome.helm-publish'
 
 group = 'org.salgar.akka.fsm'
-version = '1.1.5'
+version = '1.1.6'
 sourceCompatibility = '17'
 
 ext {
@@ -117,12 +117,12 @@ jib {
 }
 tasks.jib.dependsOn tasks.nativeCompile
 
-/**helm {
+helm {
 	charts {
 		craa {
 			publish = true
 			chartName = 'customer-relationship-adapter-application'
-			chartVersion = '1.1.0'
+			chartVersion = "${project.version}"
 			sourceDir = file('helm')
 		}
 	}
@@ -148,4 +148,5 @@ tasks.jib.dependsOn tasks.nativeCompile
 			}
 		}
 	}
-} */
+}
+tasks.helmPublish.dependsOn tasks.jib
