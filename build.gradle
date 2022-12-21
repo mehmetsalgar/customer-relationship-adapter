@@ -122,7 +122,6 @@ helm {
 	downloadClient {
 		enabled = true
 		version = '3.10.1'
-		osClassifier = 'linux-aarch64'
 	}
 
 	charts {
