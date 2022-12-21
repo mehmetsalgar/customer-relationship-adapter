@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: k3d-fsm-akka.registry:5555/fsmakka/customer-relationship-adapter-application
+  repository: k3d-${imageRepository}
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.1.5"
+  tag: "${imageTag}
 
 imagePullSecrets: []
 nameOverride: ""

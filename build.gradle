@@ -124,6 +124,11 @@ helm {
 			chartName = 'customer-relationship-adapter-application'
 			chartVersion = "${project.version}"
 			sourceDir = file('helm')
+			filtering {
+				values.put 'imageRepository', jib.to.image
+				values.put 'imageTag', jib.to.tags.first()
+				values.put 'appVersion', jib.to.tags.first()
+			}
 		}
 	}
 	repositories {
