@@ -4,7 +4,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CustomerRelationshipService {
-    public void adapt() {
+    public String adapt() {
         System.out.println("adapt!");
+        return "adapting";
     }
 }

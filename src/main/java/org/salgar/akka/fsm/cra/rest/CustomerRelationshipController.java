@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class CustomerRelationshipController {
     private final CustomerRelationshipService customerRelationshipService;
 
-    @GetMapping
-    public void adapting() {
-        customerRelationshipService.adapt();
+    @GetMapping("/adapting")
+    public String adapting() {
+        return customerRelationshipService.adapt();
     }
 }

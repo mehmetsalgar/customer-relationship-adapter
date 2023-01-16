@@ -29,7 +29,6 @@ apply plugin: 'org.unbroken-dome.helm'
 apply plugin: 'org.unbroken-dome.helm-publish'
 
 group = 'org.salgar.akka.fsm'
-version = '1.1.6'
 sourceCompatibility = '17'
 
 ext {
@@ -81,7 +80,7 @@ graalvmNative {
 				vendor = JvmVendorSpec.matching("GraalVM")
 			}
 			buildArgs.add("--verbose")
-			buildArgs.add("--static")
+			//buildArgs.add("--static")
 			runtimeArgs.add('--target linux')
 		}
 	}
