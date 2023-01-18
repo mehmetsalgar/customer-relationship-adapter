@@ -1,5 +1,7 @@
 mode: ContinuousDelivery
-branches: {}
+branches:
+  release:
+    tag: 'rc'
 ignore:
   sha: []
 merge-message-formats: {}
