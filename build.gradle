@@ -135,15 +135,16 @@ helm {
 			}
 		}
 	}
-	repositories {
+	/*repositories {
 		craa_rep {
-			url 'http://fsmakka.salgar.org/repository/fsm-akka-helm/'
+			//url 'http://fsmakka.salgar.org/repository/fsm-akka-helm/'
+			oci:
 			credentials {
 				username = "${props.HELM_USER}"
 				password = "${props.HELM_PASSWORD}"
 			}
 		}
-	}
+	}*/
 	//Azure uses OCR Repositories helm-plugin does not cover that yet
 	/*publishing {
 		repositories {
