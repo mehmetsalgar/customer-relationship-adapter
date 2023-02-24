@@ -1,0 +1,36 @@
+name: Cleanup Release Environment with Reuse
+trigger: none
+
+parameters:
+  - name: branchName
+    type: string
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: HELM_VARIABLES
+  - group: DOCKER_VARIABLES
+
+resources:
+  repositories:
+    - repository: fsm-akka-azure-pipelines
+      type: github
+      name: mehmetsalgar/fsm-akka-azure-pipelines
+      endpoint: mehmetsalgar
+
+stages:
+  - stage: Deploy
+    jobs:
+      - template: cleanup-environment.yml@fsm-akka-azure-pipelines
+        parameters:
+          branchName: "release/${{ parameters.branchName }}-fraud-prevention"
+      - job: CleanupHelmUmbrellaChartRepository
+        dependsOn: CleanupDevEnvironment
+        steps:
+          #Delete Branch Environment <-> fsm-akka-helm-umbrella-chart-az
+          - template: dispatch.yml@fsm-akka-azure-pipelines
+            parameters:
+              definitionId: "32"
+              sourceBranch: "master"
+              inputs: '"branchName": "release/${{ parameters.branchName }}-fraud-prevention"'

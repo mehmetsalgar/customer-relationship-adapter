@@ -11,7 +11,6 @@ buildscript {
 	dependencies {
 		classpath('com.google.cloud.tools:jib-native-image-extension-gradle:0.1.0')
 		classpath "org.unbroken-dome.gradle-plugins.helm:helm-plugin:1.7.0"
-		classpath "org.unbroken-dome.gradle-plugins.helm:helm-publish-plugin:1.7.0"
 	}
 }
 
@@ -26,7 +25,6 @@ plugins {
 
 apply plugin: 'com.google.cloud.tools.jib'
 apply plugin: 'org.unbroken-dome.helm'
-apply plugin: 'org.unbroken-dome.helm-publish'
 
 group = 'org.salgar.akka.fsm'
 sourceCompatibility = '17'
@@ -37,12 +35,14 @@ ext {
 
 if(ext.flag) {
 	ext.props = [
+			ALPINE_IMAGE: property('ALPINE_IMAGE') ?: 'alpine:3.17.0',
 			DOCKER_HUB_USER: property('DOCKER_HUB_USER'),
 			DOCKER_HUB_PASSWORD: property('DOCKER_HUB_PASSWORD'),
 			DOCKER_UPLOAD_USER: property('DOCKER_UPLOAD_USER'),
 			DOCKER_UPLOAD_PASSWORD: property('DOCKER_UPLOAD_PASSWORD'),
 			HELM_USER: property('HELM_USER'),
-			HELM_PASSWORD: property('HELM_PASSWORD')
+			HELM_PASSWORD: property('HELM_PASSWORD'),
+			HELM_CLIENT: property('HELM_CLIENT') ?: true
 	]
 }
 
@@ -91,7 +91,7 @@ jib {
 		mainClass = "org.salgar.akka.fsm.cra.CustomerRelationshipAdapterApplication"
 	}
 	from {
-		image = 'alpine:3.17.0@sha256:af06af3514c44a964d3b905b498cf6493db8f1cde7c10e078213a89c87308ba0'
+		image = "${props.ALPINE_IMAGE}"
 		auth {
 			username = "${props.DOCKER_HUB_USER}"
 			password = "${props.DOCKER_HUB_PASSWORD}"
@@ -118,9 +118,13 @@ jib {
 tasks.jib.dependsOn tasks.nativeCompile
 
 helm {
+	downloadClient {
+		enabled = true
+		version = '3.10.1'
+	}
 	charts {
 		craa {
-			publish = true
+			//publish = true
 			chartName = 'customer-relationship-adapter-application'
 			chartVersion = "${project.version}"
 			sourceDir = file('helm')
@@ -140,7 +144,8 @@ helm {
 			}
 		}
 	}
-	publishing {
+	//Azure uses OCR Repositories helm-plugin does not cover that yet
+	/*publishing {
 		repositories {
 			nexus {
 				url = uri('http://fsmakka.salgar.org/')
@@ -152,6 +157,7 @@ helm {
 				}
 			}
 		}
-	}
+	}*/
 }
-tasks.helmPublish.dependsOn tasks.jib
+tasks.helmPackage.dependsOn tasks.jib
+tasks.build.dependsOn tasks.helmPackage

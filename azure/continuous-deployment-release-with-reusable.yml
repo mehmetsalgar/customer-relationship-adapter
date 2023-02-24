@@ -1,0 +1,45 @@
+name: Continuous Deployment Release with Reusable
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- group: HELM_VARIABLES
+- group: DOCKER_VARIABLES
+
+resources:
+  pipelines:
+    - pipeline: Build
+      source: Build-with-Reusable
+      trigger:
+        branches:
+          include:
+            - refs/heads/release/*
+          exclude:
+            - refs/heads/master
+            - refs/heads/development
+            - refs/heads/feature/*
+            - refs/heads/bugfix/*
+            - refs/heads/hotfix/*
+  repositories:
+    - repository: fsm-akka-azure-pipelines
+      type: github
+      name: mehmetsalgar/fsm-akka-azure-pipelines
+      endpoint: mehmetsalgar
+    - repository: ServiceRepository
+      type: github
+      endpoint: mehmetsalgar
+      name: mehmetsalgar/fraud-prevention
+      ref: $(Build.SourceBranch)
+
+stages:
+  - stage: Build
+    displayName: Build
+    jobs:
+    - template: continuous-deployment-with-environment.yml@fsm-akka-azure-pipelines
+      parameters:
+        repoName: 'customer-relationship-adapter'
+        buildType: 'release'
+        branchName: $(Build.SourceBranch)
+        umbrellaChartBaseName: 'development'
+        infrastructureBaseBranchName: 'master'
+        valueFile: "value-release"

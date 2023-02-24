@@ -1,0 +1,64 @@
+name: Contionuous Deployment for Development
+resources:
+  pipelines:
+    - pipeline: Build
+      source: Build-with-Reusable
+      trigger:
+        branches:
+          include:
+          - refs/heads/development
+          exclude:
+          - refs/heads/master
+          - refs/heads/feature/*
+          - refs/heads/release/*
+          - refs/heads/bugfix/*
+          - refs/heads/hotfix/*
+  repositories:
+   - repository: fsm-akka-azure-pipelines
+     type: github
+     name: mehmetsalgar/fsm-akka-azure-pipelines
+     endpoint: mehmetsalgar
+
+jobs:
+  - job: CalculateVersion
+    displayName: Calculate Version
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+     - checkout: self
+       fetchDepth: 0
+     - task: gitversion/setup@0
+       displayName: Install GitVersion
+       inputs:
+        versionSpec: "5.x"
+     - task: gitversion/execute@0
+       name: calculateVersion
+       displayName: Calculating version
+       inputs:
+        useConfigFile: True
+        configFilePath: "GitVersion.yml"
+        additionalArguments: '"/b" "development"'
+  - job: HelmUmbrellaChartPublish
+    dependsOn: CalculateVersion
+    displayName: "Helm Umbrella Chart Publish"
+    steps:
+      #Helm Publish with Reuse - fsm-akka-helm-umbrella-chart
+      - template: dispatch.yml@fsm-akka-azure-pipelines
+        parameters:
+          definitionId: "9"
+          sourceBranch: "development"
+          inputs: ''
+  - job: PrepareEnvironment
+    variables:
+        version: $[dependencies.CalculateVersion.outputs['calculateVersion.GitVersion.SemVer']]
+    dependsOn: 
+      - CalculateVersion
+      - HelmUmbrellaChartPublish 
+    displayName: "Prepare Environment"
+    steps:
+      #Prepare Environment - fsm-akka-dev-environment
+      - template: dispatch.yml@fsm-akka-azure-pipelines
+        parameters:
+          definitionId: "11"
+          sourceBranch: "development"
+          inputs: '"sourceRepo": "customer-relationship-adapter", "version": "$(version)"'

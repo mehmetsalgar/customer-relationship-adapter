@@ -1,0 +1,42 @@
+name: Continuous Deployment Pull Request with Reusable
+pr:
+  branches:
+    include:
+      - refs/heads/development
+      - refs/heads/feature/*
+  paths:
+    exclude:
+      - "azure/*.yml"
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- group: HELM_VARIABLES
+- group: DOCKER_VARIABLES
+
+resources:
+  repositories:
+    - repository: fsm-akka-azure-pipelines
+      type: github
+      name: mehmetsalgar/fsm-akka-azure-pipelines
+      endpoint: mehmetsalgar
+    - repository: ServiceRepository
+      type: github
+      endpoint: mehmetsalgar
+      name: mehmetsalgar/fraud-prevention
+      ref: $(System.PullRequest.SourceBranch)
+
+stages:
+  - stage: Build
+    displayName: Build
+    jobs:
+    - template: continuous-deployment-with-environment.yml@fsm-akka-azure-pipelines
+      parameters:
+        repoName: 'customer-relationship-adapter'
+        buildType: 'feature'
+        branchName: $(System.PullRequest.SourceBranch)
+        umbrellaChartBaseName: 'development'
+        infrastructureBaseBranchName: 'development'
+        valueFile: "value-dev"

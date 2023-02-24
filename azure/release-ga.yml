@@ -1,0 +1,25 @@
+name: Release Service GA
+
+trigger: none
+pr: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- group: HELM_VARIABLES
+- group: DOCKER_VARIABLES
+
+resources:
+ repositories:
+   - repository: fsm-akka-azure-pipelines
+     type: github
+     name: mehmetsalgar/fsm-akka-azure-pipelines
+     endpoint: mehmetsalgar
+
+stages:
+  - stage: Build
+    jobs:
+      - template: build.yml@fsm-akka-azure-pipelines
+        parameters:
+          sourceRepo: 'customer-relationship-adapter-application'
