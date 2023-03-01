@@ -19,8 +19,10 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-- group: HELM_VARIABLES
-- group: DOCKER_VARIABLES
+  - group: HELM_VARIABLES
+  - group: DOCKER_VARIABLES
+  
+
 
 resources:
  repositories:
@@ -28,11 +30,20 @@ resources:
      type: github
      name: mehmetsalgar/fsm-akka-azure-pipelines
      endpoint: mehmetsalgar
+     
+
 
 stages:
 - stage: Build
   displayName: Build
   jobs:
+  - job: InstallGrallVM
+    steps:
+      - bash: |
+          yum -y install graalvm22-ce-17-native-image
+          export PATH="/usr/lib64/graalvm/graalvm22-ce-java17"
+          export PATH=$JAVA_HOME/bin:$PATH
+        displayName: "Install the latest GraalVM CE 22.x for Java 17 - JDK and Native Image"
   - template: build.yml@fsm-akka-azure-pipelines
     parameters:
       sourceRepo: 'customer-relationship-adapter-application'
