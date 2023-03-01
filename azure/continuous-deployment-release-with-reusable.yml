@@ -9,7 +9,7 @@ variables:
 resources:
   pipelines:
     - pipeline: Build
-      source: Build-with-Reusable
+      source: /customer-relationship-adapter/Build-with-Reusable
       trigger:
         branches:
           include:
@@ -28,7 +28,7 @@ resources:
     - repository: ServiceRepository
       type: github
       endpoint: mehmetsalgar
-      name: mehmetsalgar/fraud-prevention
+      name: mehmetsalgar/customer-relationship-adapter
       ref: $(Build.SourceBranch)
 
 stages:
