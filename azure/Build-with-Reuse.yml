@@ -21,8 +21,6 @@ pool:
 variables:
   - group: HELM_VARIABLES
   - group: DOCKER_VARIABLES
-  
-
 
 resources:
  repositories:
@@ -30,19 +28,20 @@ resources:
      type: github
      name: mehmetsalgar/fsm-akka-azure-pipelines
      endpoint: mehmetsalgar
-     
-
 
 stages:
 - stage: Build
   displayName: Build
   jobs:
   - job: InstallGrallVM
+    variables:
+      GRAALVM_VERSION: '22.3.1'
     steps:
       - bash: |
-          yum -y install graalvm22-ce-17-native-image
-          export PATH="/usr/lib64/graalvm/graalvm22-ce-java17"
-          export PATH=$JAVA_HOME/bin:$PATH
+          curl -o GraalVM.tar.gz -L https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-$(GRAALVM_VERSION)/graalvm-ce-java17-linux-amd64-$(GRAALVM_VERSION).tar.gz
+          tar -xzf GraalVM.tar.gz
+          export PATH=/tmp/graalvm-ce-java17-$(GRAALVM_VERSION)/bin:$PATH
+          export JAVA_HOME=/tmp/graalvm-ce-java17-$(GRAALVM_VERSION)
         displayName: "Install the latest GraalVM CE 22.x for Java 17 - JDK and Native Image"
   - template: build.yml@fsm-akka-azure-pipelines
     parameters:
