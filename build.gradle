@@ -81,7 +81,7 @@ graalvmNative {
 			}
 			//buildArgs.add("--verbose")
 			//necessary for ALPINE Images
-			buildArgs.add("--static")
+			//buildArgs.add("--static")
 			runtimeArgs.add('--target linux')
 		}
 	}
@@ -92,7 +92,7 @@ jib {
 		mainClass = "org.salgar.akka.fsm.cra.CustomerRelationshipAdapterApplication"
 	}
 	from {
-		image = "${props.ALPINE_IMAGE}"
+		image = "ubuntu:latest"
 		auth {
 			username = "${props.DOCKER_HUB_USER}"
 			password = "${props.DOCKER_HUB_PASSWORD}"
