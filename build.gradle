@@ -79,8 +79,9 @@ graalvmNative {
 				languageVersion = JavaLanguageVersion.of(17)
 				vendor = JvmVendorSpec.matching("GraalVM")
 			}
-			buildArgs.add("--verbose")
-			//buildArgs.add("--static")
+			//buildArgs.add("--verbose")
+			//necessary for ALPINE Images
+			buildArgs.add("--static")
 			runtimeArgs.add('--target linux')
 		}
 	}
