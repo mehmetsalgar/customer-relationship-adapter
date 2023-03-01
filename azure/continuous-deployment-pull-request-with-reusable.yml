@@ -25,7 +25,7 @@ resources:
     - repository: ServiceRepository
       type: github
       endpoint: mehmetsalgar
-      name: mehmetsalgar/fraud-prevention
+      name: mehmetsalgar/customer-relationship-adapter
       ref: $(System.PullRequest.SourceBranch)
 
 stages:
