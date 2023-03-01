@@ -2,7 +2,7 @@ name: Contionuous Deployment for Development
 resources:
   pipelines:
     - pipeline: Build
-      source: customer-relastionship-adapter/Build-with-Reusable
+      source: /customer-relationship-adapter/Build-with-Reusable
       trigger:
         branches:
           include:
