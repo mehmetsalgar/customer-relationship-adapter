@@ -42,7 +42,7 @@ if(ext.flag) {
 			DOCKER_UPLOAD_PASSWORD: property('DOCKER_UPLOAD_PASSWORD'),
 			HELM_USER: property('HELM_USER'),
 			HELM_PASSWORD: property('HELM_PASSWORD'),
-			HELM_CLIENT: property('HELM_CLIENT') ?: true
+			HELM_CLIENT:  project.getProperties().getOrDefault('HELM_CLIENT', true)
 	]
 }
 
