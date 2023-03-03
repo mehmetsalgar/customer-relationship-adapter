@@ -2,6 +2,7 @@ name: Continuous Deployment Pull Request with Reusable
 pr:
   branches:
     include:
+      - refs/heads/development
       - refs/heads/feature/*
   paths:
     exclude:
