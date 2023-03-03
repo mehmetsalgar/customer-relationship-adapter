@@ -33,4 +33,4 @@ stages:
             parameters:
               definitionId: "32"
               sourceBranch: "master"
-              inputs: '"branchName": "feature/${{ parameters.branchName }}-fraud-prevention"'
+              inputs: '"branchName": "feature/${{ parameters.branchName }}-customer-relationship-adapter"'
