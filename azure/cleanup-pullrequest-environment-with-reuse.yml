@@ -24,7 +24,7 @@ stages:
     jobs:
       - template: cleanup-environment.yml@fsm-akka-azure-pipelines
         parameters:
-          branchName: "feature/${{ parameters.branchName }}-fraud-prevention"
+          branchName: "feature/${{ parameters.branchName }}-customer-relationship-adapter"
       - job: CleanupHelmUmbrellaChartRepository
         dependsOn: CleanupDevEnvironment
         steps:
