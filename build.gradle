@@ -18,7 +18,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.0.0'
 	id 'io.spring.dependency-management' version '1.1.0'
-	id 'org.graalvm.buildtools.native' version '0.9.18'
+	id 'org.graalvm.buildtools.native' version '0.9.20'
 	id 'com.google.cloud.tools.jib' version '3.3.1'
 	id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
@@ -79,11 +79,16 @@ graalvmNative {
 				languageVersion = JavaLanguageVersion.of(17)
 				vendor = JvmVendorSpec.matching("GraalVM")
 			}
+			quickBuild = true
 			//buildArgs.add("--verbose")
 			//necessary for ALPINE Images
 			//buildArgs.add("--static")
+			buildArgs.add("--enable-monitoring=jvmstats,headdump")
 			runtimeArgs.add('--target linux')
 		}
+	}
+	metadataRepository {
+		enabled = true
 	}
 }
 
