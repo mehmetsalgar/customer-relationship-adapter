@@ -1,0 +1,17 @@
+name: Java / Gradle CI Caller
+run-name: Building with Gradle triggered via ${{ github.event_name }} by ${{ github.actor }}
+on:
+  push:
+    branches:
+      - 'development'
+      - 'release/**'
+      - 'feature/**'
+      - 'hotfix/**'
+      - 'pull/**'
+      - 'pull-requests/**'
+      - 'pr/**'
+    paths-ignore:
+      - '.github/**'
+jobs:
+  call-build-workflow:
+    uses: mehmetsalgar/fsm-akka-github-workflows/.github/workflows/build.yaml@master
