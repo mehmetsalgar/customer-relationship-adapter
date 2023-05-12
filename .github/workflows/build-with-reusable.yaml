@@ -17,3 +17,4 @@ jobs:
     uses: mehmetsalgar/fsm-akka-github-workflows/.github/workflows/build.yaml@master
     with:
       native: true
+      chart-name: "customer-relation-adapter-application"
