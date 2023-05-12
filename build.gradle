@@ -83,7 +83,7 @@ graalvmNative {
 			//buildArgs.add("--verbose")
 			//necessary for ALPINE Images
 			//buildArgs.add("--static")
-			buildArgs.add("--enable-monitoring=jvmstats,headdump")
+			buildArgs.add("--enable-monitoring=all")
 			runtimeArgs.add('--target linux')
 		}
 	}
@@ -121,7 +121,7 @@ jib {
 	}
 	allowInsecureRegistries = true
 }
-tasks.jib.dependsOn tasks.nativeCompile
+tasks.jib.dependsOn tasks.nativeImage
 
 helm {
 	downloadClient {
