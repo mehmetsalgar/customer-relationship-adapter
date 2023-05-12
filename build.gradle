@@ -121,7 +121,7 @@ jib {
 	}
 	allowInsecureRegistries = true
 }
-tasks.jib.dependsOn tasks.nativeImage
+tasks.jib.dependsOn tasks.nativeCompile
 
 helm {
 	downloadClient {
