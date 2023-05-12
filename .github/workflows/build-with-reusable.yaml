@@ -18,3 +18,4 @@ jobs:
     with:
       native: true
       chart-name: "customer-relation-adapter-application"
+    secrets: inherit
