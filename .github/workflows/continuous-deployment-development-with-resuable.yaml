@@ -1,0 +1,15 @@
+name: Continuous Deployment Caller - Development
+run-name: Continuous Deployment for Development triggered via ${{ github.event_name }} by ${{ github.actor }}
+on:
+  workflow_run:
+    workflows: [Java / Gradle CI Caller]
+    branches: [development]
+    types: [completed]
+
+jobs:
+  call-continuous-deployment-workflow:
+    uses: mehmetsalgar/fsm-akka-github-workflows/.github/workflows/continuous-deployment-development.yaml@master
+    with:
+      repo-name: "customer-relationship-adapter"
+      branch-name: "${{ github.event.workflow_run.head_branch }}"
+    secrets: inherit
