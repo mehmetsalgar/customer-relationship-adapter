@@ -1,0 +1,17 @@
+name: Continuous Deployment Caller - Pull Request
+run-name: Continuous Deployment for Pull Request triggered via ${{ github.event_name }} by ${{ github.actor }}
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - 'development'
+jobs:
+  call-continuous-deployment-workflow:
+    uses: mehmetsalgar/fsm-akka-github-workflows/.github/workflows/continuous-deployment-with-environment.yaml@master
+    with:
+      repo-name: "customer-relationship-adapter"
+      branch-name: "${{ github.event.pull_request.head.ref }}"
+      umbrella-chart-base-branch-name: "development"
+      infrastructure-base-branch-name: "master"
+      value-file: "value-dev"
+    secrets: inherit
