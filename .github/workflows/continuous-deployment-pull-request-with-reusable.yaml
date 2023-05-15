@@ -13,5 +13,5 @@ jobs:
       branch-name: "${{ github.event.pull_request.head.ref }}"
       umbrella-chart-base-branch-name: "development"
       infrastructure-base-branch-name: "master"
-      value-file: "value-dev"
+      value-file: "values-dev"
     secrets: inherit
