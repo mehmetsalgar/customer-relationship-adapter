@@ -6,7 +6,7 @@ on:
     branches:
       - 'development'
 jobs:
-  call-continuous-deployment-workflow:
+  call-continuous-deployment-workflow-for-pull-request:
     uses: mehmetsalgar/fsm-akka-github-workflows/.github/workflows/continuous-deployment-with-environment.yaml@master
     with:
       repo-name: "customer-relationship-adapter"
