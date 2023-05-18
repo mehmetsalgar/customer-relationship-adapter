@@ -1,0 +1,17 @@
+name: Continuous Deployment Caller - Release
+run-name: Continuous Deployment for Release triggered via ${{ github.event_name }} by ${{ github.actor }}
+on:
+  workflow_run:
+    workflows: [Java / Gradle CI Caller]
+    branches: [release/**]
+    types: [completed]
+jobs:
+  call-continuous-deployment-workflow:
+    uses: mehmetsalgar/fsm-akka-github-workflows/.github/workflows/continuous-deployment-with-environment.yaml@master
+    with:
+      repo-name: "customer-relationship-adapter"
+      branch-name: "${{ github.event.workflow_run.head_branch }}"
+      umbrella-chart-base-branch-name: "master"
+      infrastructure-base-branch-name: "master"
+      value-file: "values-release"
+    secrets: inherit
