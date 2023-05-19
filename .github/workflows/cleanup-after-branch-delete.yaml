@@ -1,0 +1,12 @@
+name: Cleanup after Branch Delete
+run-name: Cleanup after Branch Delete triggered via ${{ github.event_name }} by ${{ github.actor }}
+on:
+  delete:
+jobs:
+  call-cleanup-workflow:
+    if: ${{ contains(github.event.ref, 'release/') }}
+    uses: mehmetsalgar/fsm-akka-github-workflows/.github/workflows/cleanup-for-service.yaml@master
+    with:
+      repo-name: "customer-relationship-adapter"
+      branch-name: "${{ github.event.ref }}"
+    secrets: inherit
