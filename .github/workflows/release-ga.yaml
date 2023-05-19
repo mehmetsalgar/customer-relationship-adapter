@@ -1,0 +1,7 @@
+name: Release GA
+run-name: Release GA triggered via ${{ github.event_name }} by ${{ github.actor }}
+on:
+  workflow_dispatch:
+jobs:
+  release:
+    uses: mehmetsalgar/fsm-akka-github-workflows/.github/workflows/build.yaml@master
