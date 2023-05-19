@@ -1,0 +1,13 @@
+name: Cleanup Caller - Pull Request
+run-name: Cleanup Environments after Pull Request for Branch ${{ github.event.pull_request.head.ref }}
+  triggered via ${{ github.event_name }} by ${{ github.actor }}
+on:
+  pull_request:
+    types: [closed]
+jobs:
+  call-cleanup-workflow:
+    uses: mehmetsalgar/fsm-akka-github-workflows/.github/workflows/cleanup-for-service.yaml@master
+    with:
+      repo-name: "customer-relationship-adapter"
+      branch-name: "${{ github.event.pull_request.head.ref }}"
+    secrets: inherit
