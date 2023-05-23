@@ -8,6 +8,7 @@ on:
 
 jobs:
   call-continuous-deployment-workflow:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     uses: mehmetsalgar/fsm-akka-github-workflows/.github/workflows/continuous-deployment-development.yaml@master
     with:
       repo-name: "customer-relationship-adapter"
